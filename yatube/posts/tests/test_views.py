@@ -243,17 +243,21 @@ class FollowTests(TestCase):
         self.client_auth_follower.force_login(self.user_follower)
         self.client_auth_following.force_login(self.user_following)
 
-    
     def test_unfollow(self):
-        self.client_auth_follower.get(reverse('posts:profile', kwargs={'username': self.user_following.username}))
-        self.client_auth_follower.get(reverse('posts:profile', kwargs={'username': self.user_following.username}))
+        self.client_auth_follower.get(reverse(
+            'posts:profile', kwargs={'username': self.user_following.username}
+        ))
+        self.client_auth_follower.get(reverse(
+            'posts:profile', kwargs={'username': self.user_following.username})
+        )
         self.assertEqual(Follow.objects.all().count(), 0)
 
-    
     def test_follow(self):
-        self.client_auth_follower.get(reverse('posts:profile', kwargs={'username': self.user_following.username}))
+        self.client_auth_follower.get(reverse(
+            'posts:profile', kwargs={'username': self.user_following.username})
+        )
         self.assertEqual(Follow.objects.all().count(), 1)
-    
+
     def test_subscription_feed(self):
         """запись появляется в ленте подписчиков"""
         Follow.objects.create(user=self.user_follower,
@@ -261,7 +265,6 @@ class FollowTests(TestCase):
         response = self.client_auth_follower.get('/follow/')
         post_text_0 = response.context["page_obj"][0].text
         self.assertEqual(post_text_0, 'Тестовая запись для тестирования ленты')
-        # в качестве неподписанного пользователя проверяем собственную ленту
         response = self.client_auth_following.get('/follow/')
         self.assertNotContains(response,
                                'Тестовая запись для тестирования ленты')
