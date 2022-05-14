@@ -245,16 +245,22 @@ class FollowTests(TestCase):
 
     def test_unfollow(self):
         self.client_auth_follower.get(reverse(
-            'posts:profile', kwargs={'username': self.user_following.username}
+            'posts:profile_follow', kwargs={
+                'username': self.user_following.username
+            }
         ))
         self.client_auth_follower.get(reverse(
-            'posts:profile', kwargs={'username': self.user_following.username})
+            'posts:profile_unfollow', kwargs={
+                'username': self.user_following.username
+            })
         )
         self.assertEqual(Follow.objects.all().count(), 0)
 
     def test_follow(self):
         self.client_auth_follower.get(reverse(
-            'posts:profile', kwargs={'username': self.user_following.username})
+            'posts:profile_follow', kwargs={
+                'username': self.user_following.username
+            })
         )
         self.assertEqual(Follow.objects.all().count(), 1)
 
@@ -263,8 +269,10 @@ class FollowTests(TestCase):
         Follow.objects.create(user=self.user_follower,
                               author=self.user_following)
         response = self.client_auth_follower.get('/follow/')
-        post_text_0 = response.context["page_obj"][0].text
-        self.assertEqual(post_text_0, 'Тестовая запись для тестирования ленты')
+        self.assertEqual(
+            response.context["page_obj"][0].text,
+            'Тестовая запись для тестирования ленты'
+        )
         response = self.client_auth_following.get('/follow/')
         self.assertNotContains(response,
                                'Тестовая запись для тестирования ленты')
