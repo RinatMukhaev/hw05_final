@@ -2,20 +2,14 @@
 {% block title %} Последние обновления на сайте {% endblock %}
 {% block content %}
 {% load cache %}
-{% load thumbnail %}
-<div class="container py-5">
-  {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
-    <img class="card-img" src="{{ im.url }}">
-  {% endthumbnail %}
-  {% include "posts/includes/switcher.html" %}
+<div class="container py-5"> 
+{% include "posts/includes/switcher.html" %}
   <h1> Последние обновления на сайте </h1>
-  <article>
   {% cache 20 index_page with page_obj%}
-  {% for post in page_obj %}
-    {% include "includes/author_pub_date.html" with link=True %}
-  {% endfor %}
+    {% for post in page_obj %}
+      {% include "includes/post.html" with link=True %}
+    {% endfor %}
   {% endcache %}
-  {% include 'posts/includes/paginator.html' %}
-  </article>
+  {% include 'posts/includes/paginator.html' %}  
 </div>
 {% endblock %}

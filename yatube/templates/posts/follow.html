@@ -5,13 +5,11 @@
 <div class="container py-5">
   {% include "posts/includes/switcher.html" %}     
   <h1> Последние обновления на сайте </h1>
-  <article>
   {% cache 20 index_page with page_obj%}
   {% for post in page_obj %}
-    {% include "includes/author_pub_date.html" with link=True %}
+    {% include "includes/post.html" with link=True %}
   {% endfor %}
   {% endcache %}
   {% include 'posts/includes/paginator.html' %}
-  </article>
 </div>
 {% endblock %}

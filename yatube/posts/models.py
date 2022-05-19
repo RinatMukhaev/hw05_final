@@ -64,18 +64,26 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE,
-                             related_name='comments', verbose_name='Пост',
-                             help_text='Под каким постом оставлен комментарий')
-    author = models.ForeignKey(User, on_delete=models.CASCADE,
-                               related_name='comments',
-                               verbose_name='Автор комментария',
-                               help_text='Автор отображается на сайте')
-    text = models.TextField(verbose_name='Текст комментария',
-                            help_text=('Обязательное поле'))
-    created = models.DateTimeField(verbose_name='Дата публикации',
-                                   help_text='Дата публикации',
-                                   auto_now_add=True)
+    post = models.ForeignKey(
+        Post, on_delete=models.CASCADE,
+        related_name='comments', verbose_name='Пост',
+        help_text='Под каким постом оставлен комментарий'
+    )
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE,
+        related_name='comments',
+        verbose_name='Автор комментария',
+        help_text='Автор отображается на сайте'
+    )
+    text = models.TextField(
+        verbose_name='Текст комментария',
+        help_text=('Обязательное поле')
+    )
+    created = models.DateTimeField(
+        verbose_name='Дата публикации',
+        help_text='Дата публикации',
+        auto_now_add=True
+    )
 
     class Meta:
         ordering = ('-created',)
@@ -86,7 +94,14 @@ class Comment(models.Model):
 
 
 class Follow(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE,
-                             related_name="follower")
-    author = models.ForeignKey(User, on_delete=models.CASCADE,
-                               related_name="following")
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE,
+        related_name="follower"
+    )
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE,
+        related_name="following"
+    )
+
+    class Meta:
+        unique_together = ('user', 'author',)

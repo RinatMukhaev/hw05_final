@@ -28,10 +28,16 @@ def group_posts(request, slug):
 def profile(request, username):
     author = get_object_or_404(User, username=username)
     posts = author.posts.all()
+    following = request.user.is_authenticated and \
+        Follow.objects.filter(
+            user=request.user,
+            author=author
+        ).exists()
     page_obj = paginator_func(request, posts)
     context = {
         'page_obj': page_obj,
         'author': author,
+        'following': following,
     }
     return render(request, 'posts/profile.html', context)
 
@@ -39,18 +45,16 @@ def profile(request, username):
 def post_detail(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     form = CommentForm(request.POST or None)
-    comments = post.comments.all()
     context = {
         'post': post,
         'form': form,
-        'comments': comments
     }
     return render(request, 'posts/post_detail.html', context)
 
 
 @login_required
 def post_create(request):
-    form = PostForm(request.POST or None)
+    form = PostForm(request.POST or None, files=request.FILES or None,)
     if not form.is_valid():
         return render(request, 'posts/create_post.html', {'form': form})
     post = form.save(commit=False)
@@ -107,17 +111,23 @@ def follow_index(request):
 
 @login_required
 def profile_follow(request, username):
-    user = request.user
     author = get_object_or_404(User, username=username)
-    if request.user != author:
-        Follow.objects.get_or_create(user=user, author=author)
+    check_object = Follow.objects.filter(
+        user=request.user,
+        author=author
+    ).exists()
+    if request.user != author and not check_object:
+        Follow.objects.create(user=request.user, author=author)
     return redirect('posts:profile', username=username)
 
 
 @login_required
 def profile_unfollow(request, username):
-    user = request.user
     author = get_object_or_404(User, username=username)
-    if request.user != author:
-        Follow.objects.get(user=user, author__username=username).delete()
+    check_object = Follow.objects.filter(
+        user=request.user,
+        author=author
+    )
+    if check_object.exists():
+        check_object.delete()
     return redirect('posts:profile', username=username)
