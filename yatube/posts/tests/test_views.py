@@ -374,5 +374,7 @@ class YatubePagesTests(TestCase):
         post_1.text = 'Измененный текст'
         post_1.delete()
         second_state = self.authorized_client.get(reverse('posts:index'))
-        cache.clear()
         self.assertEqual(first_state.content, second_state.content)
+        cache.clear()
+        third_state = self.authorized_client.get(reverse('posts:index'))
+        self.assertNotEqual(second_state.content, third_state.content)

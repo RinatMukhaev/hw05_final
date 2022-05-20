@@ -20,14 +20,12 @@
   </a>
   <a href="{% url 'posts:post_detail' post.pk %}">подробная информация </a>
   {% if post.comments.exists %}
-    <div>
-      Комментариев: {{ post.comments.count }} &emsp;
-    </div>
+    Комментариев: {{ post.comments.count }} &emsp;
   {% endif %}
-    <a class="btn btn-sm btn-primary" href="{% url 'posts:add_comment' post.id %}" role="button">
-      Добавить комментарий
-    </a>
-    {% if post.group and link %}
-      <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>
-    {% endif %}
+  <a class="btn btn-sm btn-primary" href="{% url 'posts:add_comment' post.id %}" role="button">
+    Добавить комментарий
+  </a>
+  {% if post.group and link %}
+    <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>
+  {% endif %}
 </article>
