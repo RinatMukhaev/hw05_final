@@ -6,7 +6,6 @@ from django.conf.urls.static import static
 
 handler403 = "core.views.csrf_failure"
 handler404 = "core.views.page_not_found"
-handler500 = "posts.views.server_error"
 
 urlpatterns = [
     path('auth/', include('users.urls', namespace='users')),
